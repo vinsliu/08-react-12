@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import { Button, Container, Form, ListGroup } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCompletedTodos, selectTodos } from "./redux/selectors";
+import { addTodo, toggleTodo } from "./redux/todoSlice";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [input, setInput] = useState("");
+  const dispatch = useDispatch();
+
+  const todos = useSelector(selectTodos);
+  const completedTodos = useSelector(selectCompletedTodos);
+
+  const handleAddTodo = () => {
+    dispatch(addTodo(input));
+    setInput("");
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Container>
+      <h1>Liste des tâches</h1>
+      <Form.Control
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Ajouter une tâche ..."
+      />
+      <Button onClick={handleAddTodo} className="my-2">
+        Ajouter
+      </Button>
+
+      <ListGroup>
+        {todos.map((todo) => (
+          <ListGroup.Item
+            key={todo.id}
+            onClick={() => dispatch(toggleTodo(todo.id))}
+          >
+            {todo.texte}
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+
+      <h2>Tâches terminées</h2>
+      <ListGroup>
+        {completedTodos.map((todo) => (
+          <ListGroup.Item key={todo.id}> {todo.texte} </ListGroup.Item>
+        ))}
+      </ListGroup>
+    </Container>
+  );
 }
 
-export default App
+export default App;
