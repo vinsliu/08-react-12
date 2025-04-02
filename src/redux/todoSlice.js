@@ -20,7 +20,7 @@ const todoSlice = createSlice({
     toggleTodo: (state, action) => {
       return {
         ...state,
-        todos: state.todos.filter((todo) =>
+        todos: state.todos.map((todo) =>
           todo.id === action.payload
             ? { ...todo, completed: !todo.completed }
             : todo
